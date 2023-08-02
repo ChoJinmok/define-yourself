@@ -1,9 +1,26 @@
+'use client';
+
+import styled, { keyframes } from 'styled-components';
+
+const ping = keyframes`
+  75%, 100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+`;
+
+const Title = styled.h1`
+  animation: ${ping} 1s cubic-bezier(0, 0, 0.2, 1) 2;
+`;
+
 export default function Home() {
   return (
     <main>
-      <h1 className="text-4xl absolute inset-0 flex items-center justify-center">
-        DEFINE JINMOK
-      </h1>
+      <div className="text-4xl absolute inset-0 flex items-center justify-center">
+        <Title>
+          DEFINE JINMOK
+        </Title>
+      </div>
       <h2 className="text-2xl float-right pr-[5%] mt-64 mb-5">
         <p>
           사람들과
@@ -19,6 +36,7 @@ export default function Home() {
           입니다.
         </p>
       </h2>
+      <div />
     </main>
   );
 }
