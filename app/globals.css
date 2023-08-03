@@ -22,7 +22,8 @@ html ::selection {
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
+  /* color: rgb(var(--foreground-rgb)); */
+  color: black;
   background-color: #f7f6f1;
   /* background: linear-gradient(
       to bottom,

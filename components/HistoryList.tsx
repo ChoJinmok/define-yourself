@@ -2,20 +2,25 @@ import Image from 'next/image';
 
 import styled from 'styled-components';
 
-const Wrapper = styled.li`
-    &:not(:nth-last-of-type(2)) span::after {
-      content: ",";
-    }
+const Wrapper = styled.li<{ $alignment: string }>`
+  &:not(:nth-last-of-type(2)) span::after {
+    content: ",";
+  }
+
+  & img {
+    object-position: ${({ $alignment }) => $alignment || 'center'};
+  }
 `;
 
 interface HistoryListProps {
   name: string;
   imgSrc: string;
+  alignment?: string;
 }
 
-export default function HistoryList({ name, imgSrc }: HistoryListProps) {
+export default function HistoryList({ name, imgSrc, alignment = '' }: HistoryListProps) {
   return (
-    <Wrapper className="group cursor-default">
+    <Wrapper className="group cursor-default" $alignment={alignment}>
       <span className="text-9xl font-bold pr-5 tracking-tighter">
         {name}
       </span>
