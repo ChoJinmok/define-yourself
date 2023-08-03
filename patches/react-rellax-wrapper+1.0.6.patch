@@ -1,0 +1,20 @@
+diff --git a/node_modules/react-rellax-wrapper/lib/rellaxWrapper.d.ts b/node_modules/react-rellax-wrapper/lib/rellaxWrapper.d.ts
+index 444932f..3867800 100644
+--- a/node_modules/react-rellax-wrapper/lib/rellaxWrapper.d.ts
++++ b/node_modules/react-rellax-wrapper/lib/rellaxWrapper.d.ts
+@@ -1,5 +1,5 @@
+ import React, { FC } from 'react';
+-interface RellaxWrapperProps {
++export interface RellaxWrapperProps {
+     style?: React.CSSProperties;
+     className?: string;
+     zIndex?: number;
+@@ -63,6 +63,8 @@ interface RellaxWrapperProps {
+      * Each breakpoint value represents the resolution for mobile, tablet, desktop respectively.
+      */
+     breakpoints?: [number, number, number];
++
++    children?: React.ReactNode;
+ }
+ declare const RellaxWrapper: FC<RellaxWrapperProps>;
+ export default RellaxWrapper;
