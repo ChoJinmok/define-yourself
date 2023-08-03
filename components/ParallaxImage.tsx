@@ -36,6 +36,8 @@ interface ParallaxImageProps extends RellaxWrapperProps {
   span: number;
   description?: string;
   position?: string;
+  speed?: number;
+  percentage?: number;
 }
 
 export default function ParallaxImage({
@@ -70,4 +72,6 @@ ParallaxImage.defaultProps = {
   className: '',
   description: '',
   position: '',
+  speed: -2,
+  percentage: 0,
 };
