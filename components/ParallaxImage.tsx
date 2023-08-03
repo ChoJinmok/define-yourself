@@ -4,8 +4,6 @@ import styled from 'styled-components';
 
 import RellaxWrapper from 'react-rellax-wrapper';
 
-import type { RellaxWrapperProps } from 'react-rellax-wrapper/lib/rellaxWrapper';
-
 const GridContainer = styled.div<{ ratio: string, start: number, span: number, position?: string }>`
   aspect-ratio: ${({ ratio }) => ratio};
   grid-column: ${({ start, span }) => `${start} / ${start + span}`};
@@ -27,7 +25,7 @@ const Description = styled.span`
   transition-property: transform, opacity;
 `;
 
-interface ParallaxImageProps extends RellaxWrapperProps {
+interface ParallaxImageProps {
   className?: string;
   src: string;
   alt: string;
