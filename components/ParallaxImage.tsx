@@ -6,10 +6,10 @@ import RellaxWrapper from 'react-rellax-wrapper';
 
 import type { RellaxWrapperProps } from 'react-rellax-wrapper/lib/rellaxWrapper';
 
-const GridContainer = styled.div<{ ratio: string, start: number, span: number, position?: string }>`
-  aspect-ratio: ${({ ratio }) => ratio};
-  grid-column: ${({ start, span }) => `${start} / ${start + span}`};
-  transform: ${({ position }) => `translateY(${position})`};
+const GridContainer = styled.div<{ $ratio: string, $start: number, $span: number, $position?: string }>`
+  aspect-ratio: ${({ $ratio }) => $ratio};
+  grid-column: ${({ $start, $span }) => `${$start} / ${$start + $span}`};
+  transform: ${({ $position }) => `translateY(${$position})`};
 
   &:hover span {
     opacity: 1;
@@ -39,11 +39,11 @@ interface ParallaxImageProps extends RellaxWrapperProps {
 }
 
 export default function ParallaxImage({
-  className, src, alt, ratio, start, span, description, position, speed, percentage,
+  className = '', src, alt, ratio, start, span, description = '', position = '', speed, percentage,
 }: ParallaxImageProps) {
   return (
     <div className={`${className} grid grid-cols-24 gap-x-1.5 z-0`}>
-      <GridContainer ratio={ratio} start={start} span={span} position={position} className="group z-20">
+      <GridContainer $ratio={ratio} $start={start} $span={span} $position={position} className="group z-20">
         <div className="overflow-hidden h-full">
           <RellaxWrapper speed={speed} percentage={percentage} className="h-full">
             <div className="relative h-full">
@@ -65,9 +65,3 @@ export default function ParallaxImage({
     </div>
   );
 }
-
-ParallaxImage.defaultProps = {
-  className: '',
-  description: '',
-  position: '',
-};

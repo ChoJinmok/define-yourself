@@ -3,6 +3,9 @@
 import styled, { keyframes } from 'styled-components';
 
 import ParallaxImage from '@/components/ParallaxImage';
+import HistoryList from '@/components/HistoryList';
+
+import historyList from '@/lib/fixtures/historyList';
 
 const ping = keyframes`
   75%, 100% {
@@ -28,6 +31,12 @@ const Contents = styled.div`
   opacity: 0;
   animation: ${fadeIn} 1s cubic-bezier(0, 0, 0.2, 1) 3s;
   animation-fill-mode: forwards;
+`;
+
+const HistorySection = styled.section`
+  &:has(li:hover) li:not(:hover) span {
+    color: rgba(0, 0, 0, 0.1);
+  }
 `;
 
 export default function Home() {
@@ -68,8 +77,8 @@ export default function Home() {
       </Contents>
       <Contents className="relative z-20 bg-[#f7f6f1]">
         <div className="px-[15px] py-[120px] grid grid-cols-4 gap-x-1.5">
-          <h3 className="text-xs col-span-2">BEGINS</h3>
-          <p className="text-2xl">
+          <h3 className="text-xs col-span-2 tracking-widest">BEGINS</h3>
+          <p className="text-2xl tracking-tight">
             저는
             {' '}
             <span className="italic">대구</span>
@@ -109,6 +118,17 @@ export default function Home() {
           position="-40%"
           description="장래희망"
         />
+        <HistorySection className="px-[15px]">
+          <h3 className="text-xs mb-10 tracking-widest">HISTORY</h3>
+          <ul className="flex flex-wrap relative">
+            {historyList.map(({ id, name, imgSrc }) => (
+              <HistoryList key={id} name={name} imgSrc={imgSrc} />
+            ))}
+            <li className="group cursor-default">
+              <span className="text-9xl font-bold pr-5 tracking-tighter">(...)</span>
+            </li>
+          </ul>
+        </HistorySection>
       </Contents>
     </main>
   );
