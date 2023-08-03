@@ -20,7 +20,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <StyledComponentsRegistry>
           <header className="py-5 px-4">
-            <p className="text-[10px]">DEFINE YOURSELF</p>
+            <p className="text-xs">DEFINE YOURSELF</p>
           </header>
           {children}
         </StyledComponentsRegistry>

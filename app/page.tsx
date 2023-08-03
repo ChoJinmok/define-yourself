@@ -1,10 +1,8 @@
 'use client';
 
-import Image from 'next/image';
-
 import styled, { keyframes } from 'styled-components';
 
-import RellaxWrapper from 'react-rellax-wrapper';
+import ParallaxImage from '@/components/ParallaxImage';
 
 const ping = keyframes`
   75%, 100% {
@@ -58,13 +56,59 @@ export default function Home() {
             </p>
           </h2>
         </div>
-        <div className="overflow-hidden h-screen">
-          <RellaxWrapper speed={-3} percentage={0.5}>
-            <div className="relative h-screen">
-              <Image alt="cover" src="/cover.jpg" fill className="object-cover" priority />
-            </div>
-          </RellaxWrapper>
+        <ParallaxImage
+          alt="cover"
+          src="/cover.jpg"
+          ratio="16/9"
+          speed={-5}
+          percentage={0.5}
+          start={1}
+          span={24}
+        />
+      </Contents>
+      <Contents className="relative z-20 bg-[#f7f6f1]">
+        <div className="px-[15px] py-[120px] grid grid-cols-4 gap-x-1.5">
+          <h3 className="text-xs col-span-2">BEGINS</h3>
+          <p className="text-2xl">
+            저는
+            {' '}
+            <span className="italic">대구</span>
+            에서 태어났습니다. 부유하진 않지만 유복한 가정에서...
+          </p>
         </div>
+        <ParallaxImage
+          alt="childhood"
+          src="/childhood/1.jpg"
+          ratio="2/3"
+          speed={-5}
+          percentage={0.5}
+          start={14}
+          span={12}
+          description="아가시절"
+        />
+        <ParallaxImage
+          alt="childhood"
+          src="/childhood/9.jpg"
+          ratio="2/3"
+          speed={-5}
+          percentage={0.5}
+          start={1}
+          span={8}
+          className="pl-[15px]"
+          position="-30%"
+          description="유치원 졸업"
+        />
+        <ParallaxImage
+          alt="childhood"
+          src="/childhood/10.jpg"
+          ratio="2/3"
+          speed={-5}
+          percentage={0.5}
+          start={10}
+          span={12}
+          position="-40%"
+          description="장래희망"
+        />
       </Contents>
     </main>
   );
