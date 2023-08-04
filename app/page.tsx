@@ -1,6 +1,10 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import {
+  useState, useEffect, useRef, useCallback,
+} from 'react';
+
+import Image from 'next/image';
 
 import styled, { keyframes } from 'styled-components';
 
@@ -43,11 +47,24 @@ const HistorySection = styled.section`
   }
 `;
 
+const ProjectImages = styled.div<{ $index: number }>`
+  transform: translateY(${({ $index }) => `-${60 * $index}vh`});
+`;
+
+const ProjectSection = styled.section<{ $translateY: number }>`
+  transform: translateY(${({ $translateY }) => `${$translateY}px`});
+`;
+
 export default function Home() {
   const [historyKeyword, setHistoryKeyword] = useState('');
   const [activeDivIndex, setActiveDivIndex] = useState(-1);
+  const [isProjectVisible, setIsProjectVisible] = useState(false);
+  const [offsetY, setOffsetY] = useState<null | number>(null);
+  const [activeProjectSlideIndex, setActiveProjectSlideIndex] = useState(0);
+  const [isProjectSlideComplete, setIsProjectSlideComplete] = useState(false);
+  const [projectSectionPosition, setProjectSectionPosition] = useState(0);
 
-  const divRefs = [
+  const historyDivRefs = [
     useRef(null),
     useRef(null),
     useRef(null),
@@ -57,15 +74,19 @@ export default function Home() {
     useRef(null),
   ];
 
+  const projectTitleRef = useRef(null);
+  const projectSectionRef = useRef(null);
+  const projectNameRef = useRef(null);
+
   function checkIfCentered() {
     const screenCenterY = window.innerHeight / 2;
 
-    const index = divRefs.findLastIndex((ref) => {
+    const index = historyDivRefs.findLastIndex((ref) => {
       if (!ref.current) return false;
 
-      const currentElement = ref.current as HTMLDivElement;
+      const currentHistoryElement = ref.current as HTMLDivElement;
 
-      const elementRect = currentElement.getBoundingClientRect();
+      const elementRect = currentHistoryElement.getBoundingClientRect();
       return elementRect.top < screenCenterY;
     });
 
@@ -73,11 +94,85 @@ export default function Home() {
     setActiveDivIndex(index);
   }
 
+  function checkProjectVisible() {
+    if (!projectTitleRef.current) return;
+
+    const projectTitleElement = projectTitleRef.current as HTMLDivElement;
+    const { top } = projectTitleElement.getBoundingClientRect();
+    const screenY = window.innerHeight;
+
+    if (top < screenY) {
+      setIsProjectVisible(true);
+    } else {
+      setIsProjectVisible(false);
+    }
+  }
+
+  const handleProjectSectionScroll = useCallback(() => {
+    if (!projectSectionRef.current) return;
+
+    const projectSection = projectSectionRef.current as HTMLDivElement;
+    const { top } = projectSection.getBoundingClientRect();
+    const { scrollY } = window;
+
+    if (top === 0 && offsetY === null) {
+      setOffsetY(scrollY);
+    }
+  }, [offsetY]);
+
+  function handleScrollOffsetChange() {
+    if (typeof offsetY !== 'number') return;
+
+    const { scrollY } = window;
+    const screenY = window.innerHeight;
+
+    const scrollOffsetDifference = scrollY - offsetY;
+
+    if (scrollOffsetDifference / screenY >= 3) {
+      if (projectSectionPosition && isProjectSlideComplete) return;
+      setProjectSectionPosition(scrollOffsetDifference);
+      setIsProjectSlideComplete(true);
+    } else {
+      setProjectSectionPosition(0);
+      setIsProjectSlideComplete(false);
+
+      // if (!projectNameRef.current) return;
+
+      // const projectNameElement = projectNameRef.current as HTMLElement;
+
+      if (scrollOffsetDifference / screenY >= 2) {
+        // projectNameElement.classList.add('animate-pulse');
+        setActiveProjectSlideIndex(2);
+      } else if (scrollOffsetDifference / screenY >= 1) {
+        // projectNameElement.classList.add('animate-pulse');
+        setActiveProjectSlideIndex(1);
+      } else {
+        // projectNameElement.classList.add('animate-pulse');
+        setActiveProjectSlideIndex(0);
+      }
+    }
+  }
+
+  // function handleAnimationEnd() {
+  //   if (!projectNameRef.current) return;
+
+  //   const projectNameElement = projectNameRef.current as HTMLElement;
+  //   projectNameElement.classList.remove('animate-pulse');
+  // }
+
   useEffect(() => {
     window.addEventListener('scroll', checkIfCentered);
-    return () => window.removeEventListener('scroll', checkIfCentered);
+    window.addEventListener('scroll', checkProjectVisible);
+    window.addEventListener('scroll', handleProjectSectionScroll);
+    window.addEventListener('scroll', handleScrollOffsetChange);
+    return () => {
+      window.removeEventListener('scroll', checkIfCentered);
+      window.removeEventListener('scroll', checkProjectVisible);
+      window.removeEventListener('scroll', handleProjectSectionScroll);
+      window.removeEventListener('scroll', handleScrollOffsetChange);
+    };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [handleProjectSectionScroll, handleScrollOffsetChange]);
 
   return (
     <main>
@@ -164,7 +259,7 @@ export default function Home() {
           <h3 className="text-xs mb-10 tracking-widest">HISTORY</h3>
           <ul className="flex flex-wrap relative">
             {historyList.map(({ id, name, imgSrc }) => (
-              <HistoryList key={id} name={name} imgSrc={imgSrc} alignment={name === 'CGV VVVIP' ? 'left' : ''} />
+              <HistoryList key={id} name={name} imgSrc={imgSrc} alignment={name === 'VVVIP' ? 'left' : ''} />
             ))}
             <li className="group cursor-default">
               <span className="text-9xl font-bold pr-5 tracking-tighter">(...)</span>
@@ -173,7 +268,7 @@ export default function Home() {
         </HistorySection>
 
         <section className="px-[15px]">
-          {activeDivIndex !== -1 && <h2 className="fixed top-1/2 -translate-y-1/2 left-1/2 text-8xl font-bold z-30">{historyKeyword}</h2>}
+          {activeDivIndex !== -1 && !isProjectVisible && <h2 className="fixed top-1/2 -translate-y-1/2 left-1/2 text-8xl font-bold z-30">{historyKeyword}</h2>}
 
           {/* 토목공학 */}
           <HistoryImage
@@ -182,7 +277,7 @@ export default function Home() {
             alt="college-day"
             start={11}
             span={7}
-            ref={divRefs[0]}
+            ref={historyDivRefs[0]}
             imgSrc="/college-days/7.jpg"
           />
           <HistoryImage
@@ -202,7 +297,7 @@ export default function Home() {
             alt="movie"
             start={16}
             span={7}
-            ref={divRefs[1]}
+            ref={historyDivRefs[1]}
             imgSrc="/movie/3.jpg"
           />
           <HistoryImage
@@ -221,7 +316,7 @@ export default function Home() {
             alt="construction"
             start={18}
             span={7}
-            ref={divRefs[2]}
+            ref={historyDivRefs[2]}
             imgSrc="/construction/7.jpg"
           />
           <HistoryImage
@@ -235,7 +330,7 @@ export default function Home() {
 
           {/* 인테리어 */}
           <HistoryImages
-            ref={divRefs[3]}
+            ref={historyDivRefs[3]}
             historyImages={[{
               speed: 2, percentage: 0.5, alt: 'interior-1', start: 1, span: 7, imgSrc: '/interior/13.jpg',
             }, {
@@ -245,7 +340,7 @@ export default function Home() {
 
           {/* 카페 */}
           <HistoryImages
-            ref={divRefs[4]}
+            ref={historyDivRefs[4]}
             historyImages={[{
               speed: 2, percentage: 0.5, alt: 'cafe-1', start: 7, span: 7, imgSrc: '/cafe/3.jpg',
             }, {
@@ -255,7 +350,7 @@ export default function Home() {
 
           {/* 조카 */}
           <HistoryImages
-            ref={divRefs[5]}
+            ref={historyDivRefs[5]}
             historyImages={[{
               speed: 2, percentage: 0.5, alt: 'wonhu-1', start: 3, span: 7, imgSrc: '/wonhu/11.jpg',
             }, {
@@ -270,7 +365,7 @@ export default function Home() {
             alt="developer"
             start={8}
             span={7}
-            ref={divRefs[6]}
+            ref={historyDivRefs[6]}
             imgSrc="/developer/7.jpg"
           />
           <HistoryImage
@@ -281,6 +376,54 @@ export default function Home() {
             span={7}
             imgSrc="/developer/8.jpg"
           />
+        </section>
+
+        <h2 ref={projectTitleRef} className="pl-6 text-9xl font-bold tracking-tighter mt-96">Projects</h2>
+        <ProjectSection $translateY={projectSectionPosition} ref={projectSectionRef} className={`h-screen mt-10 top-0 px-[15px] pt-[20vh] ${isProjectSlideComplete ? '' : 'sticky'}`}>
+          <div className="h-[60vh] flex w-full justify-between items-center">
+            <div className="h-full aspect-[2/3] overflow-hidden">
+              <ProjectImages className="h-fit w-full transition-transform duration-700" $index={activeProjectSlideIndex}>
+                <div className="relative w-full h-[60vh]">
+                  <Image alt="" src="/project/playg.jpg" fill className="object-cover" priority />
+                </div>
+                <a href="https://plab.pia.space" target="_blank" rel="noreferrer">
+                  <div className="relative w-full h-[60vh]">
+                    <Image alt="" src="/project/plab.png" fill className="object-cover" priority />
+                  </div>
+                </a>
+                <div className="relative w-full h-[60vh]">
+                  <Image alt="" src="/project/hanatour.png" fill className="object-cover" priority />
+                </div>
+              </ProjectImages>
+            </div>
+            <h3 ref={projectNameRef} className="pr-[4vw] text-3xl">{['AI Playground', 'PLab', 'Mars(가제)'][activeProjectSlideIndex]}</h3>
+          </div>
+        </ProjectSection>
+        <section className="h-screen" />
+        <section className="h-screen" />
+        <section className="h-screen" />
+        <section className="h-screen relative">
+          <ParallaxImage
+            alt="hotseller"
+            src="/hotseller2.png"
+            ratio="3/4"
+            speed={-3}
+            percentage={0.5}
+            start={13}
+            span={12}
+          />
+          <ParallaxImage
+            alt="hotseller"
+            src="/hotseller1.jpg"
+            ratio="3/4"
+            speed={-3}
+            percentage={0.5}
+            start={1}
+            span={8}
+            className="pl-[15px] bg-[#f7f6f1]"
+            position="-40%"
+          />
+          <h2 className="text-8xl font-bold text-center h-[550px] bg-[#f7f6f1]">孤掌難鳴</h2>
         </section>
       </Contents>
     </main>
