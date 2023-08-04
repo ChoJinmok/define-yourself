@@ -411,6 +411,7 @@ export default function Home() {
             percentage={0.5}
             start={13}
             span={12}
+            className="bg-[#f7f6f1]"
           />
           <ParallaxImage
             alt="hotseller"
@@ -423,7 +424,7 @@ export default function Home() {
             className="pl-[15px] bg-[#f7f6f1]"
             position="-40%"
           />
-          <h2 className="text-8xl font-bold text-center h-[550px] bg-[#f7f6f1]">孤掌難鳴</h2>
+          <h2 className="text-8xl font-bold text-center h-[560px] bg-[#f7f6f1]">孤掌難鳴</h2>
         </section>
       </Contents>
     </main>
